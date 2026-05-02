@@ -7,32 +7,30 @@ const images = [
   { url: "https://picsum.photos/id/239/200/300" },
 ];
 
-// download single image
-function downloadImage(url) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = url;
+// safety check (VERY IMPORTANT)
+if (btn) {
 
-    img.onload = () => resolve(img);
-    img.onerror = () => reject("Error loading " + url);
-  });
-}
+  function downloadImage(url) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = url;
 
-// main function
-function downloadImages() {
-  output.innerHTML = "";
-
-  const promises = images.map((img) => downloadImage(img.url));
-
-  Promise.all(promises)
-    .then((results) => {
-      results.forEach((img) => {
-        output.appendChild(img);
-      });
-    })
-    .catch((err) => {
-      console.error(err);
+      img.onload = () => resolve(img);
+      img.onerror = () => reject("Error loading " + url);
     });
-}
+  }
 
-btn.addEventListener("click", downloadImages);
+  function downloadImages() {
+    output.innerHTML = "";
+
+    const promises = images.map(img => downloadImage(img.url));
+
+    Promise.all(promises)
+      .then(results => {
+        results.forEach(img => output.appendChild(img));
+      })
+      .catch(err => console.error(err));
+  }
+
+  btn.addEventListener("click", downloadImages);
+}
